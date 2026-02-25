@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnVault - Vulnerability Intelligence & Scanning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-cyan: #06b6d4;
+            --primary-purple: #a855f7;
+            --primary-orange: #f97316;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(6, 182, 212, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(to bottom, #0f172a, #020617);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Animations */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #06b6d4;
+            top: 80px;
+            left: -100px;
+            animation-duration: 20s;
+        }
+
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: #f97316;
+            top: 400px;
+            right: -100px;
+            animation-duration: 25s;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #a855f7;
+            bottom: -100px;
+            left: 30%;
+            animation-duration: 30s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(50px, 50px); }
+            50% { transform: translate(-50px, -50px); }
+            75% { transform: translate(-50px, 50px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 0 2rem;
+            height: 80px;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #06b6d4, #a855f7);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #06b6d4, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-cyan);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #06b6d4, #f97316);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #06b6d4, #a855f7, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Space Mono', monospace;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #06b6d4, #0891b2);
+            color: white;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-cyan);
+            border: 2px solid rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-cyan);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.15);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Vulnerability Cards */
+        .vuln-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .vuln-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vuln-card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.1);
+        }
+
+        .vuln-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .vuln-id {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .severity-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .severity-critical {
+            background: linear-gradient(90deg, #dc2626, #f97316);
+        }
+
+        .severity-high {
+            background: linear-gradient(90deg, #f97316, #eab308);
+        }
+
+        .vuln-card h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .vuln-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vuln-info-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .vuln-info-label {
+            color: var(--text-muted);
+        }
+
+        .vuln-info-value {
+            color: var(--primary-cyan);
+            font-weight: 600;
+        }
+
+        .vuln-details-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--primary-cyan);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .vuln-details-btn:hover {
+            background: rgba(6, 182, 212, 0.2);
+            border-color: var(--primary-cyan);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .section-light {
+            background: linear-gradient(to bottom, rgba(6, 182, 212, 0.05), transparent);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .two-column h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .feature-list {
+            list-style: none;
+            space: 1.5rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .feature-list li:before {
+            content: '✓';
+            color: var(--primary-cyan);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .scanner-placeholder {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 400px;
+            color: var(--text-muted);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-form {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-info h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), transparent);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-cyan);
+        }
+
+        .info-content h4 {
+            font-family: 'Syne', sans-serif;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .info-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06b6d4, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .team-member h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .team-member p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-cyan);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .social-link:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--primary-cyan);
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .faq-question {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-answer {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.5);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 2rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Syne', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-cyan);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .vuln-info {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .scanner-placeholder {
+                min-height: 250px;
+                padding: 2rem;
+            }
+        }
+
+        /* Page specific styles */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .reason-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .reason-card:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .reason-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reason-card h4 {
+            font-family: 'Syne', sans-serif;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .reason-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animated">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🛡️</div>
+                <span class="logo-text">VulnVault</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active" onclick="navigateTo('home')">Home</a></li>
+                <li><a href="#about" class="nav-link" onclick="navigateTo('about')">About</a></li>
+                <li><a href="#contact" class="nav-link" onclick="navigateTo('contact')">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <div style="display: inline-block; margin-bottom: 2rem; padding: 0.75rem 1.5rem; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 20px; font-size: 0.9rem; color: #22d3ee;">
+                            ⚠️ Real-time Vulnerability Intelligence
+                        </div>
+                        <h1>Secure Your Web <span class="gradient-text">Applications Today</span></h1>
+                        <p>VulnVault delivers real-time vulnerability intelligence, comprehensive patch information, and advanced scanning tools to protect your web applications from emerging threats.</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary">Start Scanning →</button>
+                            <button class="btn btn-secondary">View Latest Vulnerabilities</button>
+                        </div>
+
+                        <!-- Feature Cards -->
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-icon">🎯</div>
+                                <h3>Real-time Detection</h3>
+                                <p>Instant alerts for new vulnerabilities as they emerge in the wild</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">🔍</div>
+                                <h3>Smart Scanning</h3>
+                                <p>Advanced vulnerability detection powered by AI analysis</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">📋</div>
+                                <h3>Patch Updates</h3>
+                                <p>Comprehensive remediation guides and patch information</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Latest Vulnerabilities Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Latest Vulnerabilities</h2>
+                        <p>Critical threats updated in real-time</p>
+                    </div>
+
+                    <div class="vuln-cards">
+                        <!-- Vulnerability Card 1 -->
+                        <div class="vuln-card">
+                            <div class="vuln-header">
+                                <div class="vuln-id">CVE-2024-001</div>
+                                <div class="severity-badge severity-critical">CRITICAL</div>
+                            </div>
+                            <h4>Critical SQL Injection in Database Layer</h4>
+                            <div class="vuln-info">
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">CVSS Score:</span>
+                                    <span class="vuln-info-value">9.8</span>
+                                </div>
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">Published:</span>
+                                    <span class="vuln-info-value">2024-02-20</span>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Affects: MySQL, PostgreSQL, Oracle</p>
+                            <button class="vuln-details-btn">View Details →</button>
+                        </div>
+
+                        <!-- Vulnerability Card 2 -->
+                        <div class="vuln-card">
+                            <div class="vuln-header">
+                                <div class="vuln-id">CVE-2024-002</div>
+                                <div class="severity-badge severity-high">HIGH</div>
+                            </div>
+                            <h4>XSS Vulnerability in Web Components</h4>
+                            <div class="vuln-info">
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">CVSS Score:</span>
+                                    <span class="vuln-info-value">8.2</span>
+                                </div>
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">Published:</span>
+                                    <span class="vuln-info-value">2024-02-19</span>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Affects: React, Vue, Angular</p>
+                            <button class="vuln-details-btn">View Details →</button>
+                        </div>
+
+                        <!-- Vulnerability Card 3 -->
+                        <div class="vuln-card">
+                            <div class="vuln-header">
+                                <div class="vuln-id">CVE-2024-003</div>
+                                <div class="severity-badge severity-critical">CRITICAL</div>
+                            </div>
+                            <h4>Authentication Bypass in OAuth 2.0</h4>
+                            <div class="vuln-info">
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">CVSS Score:</span>
+                                    <span class="vuln-info-value">9.5</span>
+                                </div>
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">Published:</span>
+                                    <span class="vuln-info-value">2024-02-18</span>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Affects: OAuth Providers</p>
+                            <button class="vuln-details-btn">View Details →</button>
+                        </div>
+
+                        <!-- Vulnerability Card 4 -->
+                        <div class="vuln-card">
+                            <div class="vuln-header">
+                                <div class="vuln-id">CVE-2024-004</div>
+                                <div class="severity-badge severity-high">HIGH</div>
+                            </div>
+                            <h4>Path Traversal in File Upload Handler</h4>
+                            <div class="vuln-info">
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">CVSS Score:</span>
+                                    <span class="vuln-info-value">8.1</span>
+                                </div>
+                                <div class="vuln-info-item">
+                                    <span class="vuln-info-label">Published:</span>
+                                    <span class="vuln-info-value">2024-02-17</span>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Affects: Web Servers</p>
+                            <button class="vuln-details-btn">View Details →</button>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn btn-secondary">See All Vulnerabilities →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scanner Feature Section -->
+            <section class="section">
+                <div class="container">
+                    <div class="two-column">
+                        <div>
+                            <h3>Scan Your Application</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">VulnVault's advanced scanning engine analyzes your web application against thousands of known vulnerabilities in real-time.</p>
+                            <ul class="feature-list">
+                                <li>Automated vulnerability detection</li>
+                                <li>OWASP Top 10 compliance check</li>
+                                <li>Custom payload testing</li>
+                                <li>Detailed remediation guidance</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="scanner-placeholder">
+                                <div>
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔎</div>
+                                    <p>Upload your application or enter URL to start scanning</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="about" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 50vh;">
+                <div class="container">
+                    <div class="hero-content" style="text-align: center;">
+                        <h1 class="gradient-text">About VulnVault</h1>
+                        <p>Protecting web applications through intelligent vulnerability intelligence and advanced security scanning.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mission & Vision -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="about-grid">
+                        <div class="card">
+                            <div class="card-icon" style="font-size: 2.5rem;">🛡️</div>
+                            <h3>Our Mission</h3>
+                            <p>To empower web developers with real-time vulnerability intelligence and advanced scanning capabilities, enabling them to build secure applications and protect users from cyber threats.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon" style="font-size: 2.5rem;">⚡</div>
+                            <h3>Our Vision</h3>
+                            <p>A world where security vulnerabilities are identified and patched before they can be exploited, creating a safer digital ecosystem for everyone.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Why Choose VulnVault</h2>
+                    </div>
+
+                    <div class="cards-grid" style="margin-bottom: 3rem;">
+                        <div class="reason-card">
+                            <div class="reason-icon">🔐</div>
+                            <div>
+                                <h4>Enterprise-Grade Security</h4>
+                                <p>Bank-level encryption and security protocols protect your data</p>
+                            </div>
+                        </div>
+                        <div class="reason-card">
+                            <div class="reason-icon">⚡</div>
+                            <div>
+                                <h4>Real-Time Intelligence</h4>
+                                <p>Instant alerts for new vulnerabilities as they emerge</p>
+                            </div>
+                        </div>
+                        <div class="reason-card">
+                            <div class="reason-icon">🎯</div>
+                            <div>
+                                <h4>Advanced Scanning</h4>
+                                <p>Deep analysis with zero false positives using ML</p>
+                            </div>
+                        </div>
+                        <div class="reason-card">
+                            <div class="reason-icon">📋</div>
+                            <div>
+                                <h4>Actionable Insights</h4>
+                                <p>Clear remediation guidance for every issue found</p>
+                            </div>
+                        </div>
+                        <div class="reason-card">
+                            <div class="reason-icon">🔗</div>
+                            <div>
+                                <h4>Open Community</h4>
+                                <p>Integrated with popular dev tools and platforms</p>
+                            </div>
+                        </div>
+                        <div class="reason-card">
+                            <div class="reason-icon">🆘</div>
+                            <div>
+                                <h4>24/7 Support</h4>
+                                <p>Expert security team always available to help</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Meet Our Team</h2>
+                    </div>
+
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-avatar">AC</div>
+                            <h4>Alex Chen</h4>
+                            <p>Security Expert</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar" style="background: linear-gradient(135deg, #a855f7, #f97316);">SW</div>
+                            <h4>Sarah Williams</h4>
+                            <p>Full Stack Developer</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar" style="background: linear-gradient(135deg, #f97316, #06b6d4);">JR</div>
+                            <h4>James Rodriguez</h4>
+                            <p>DevSecOps Lead</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 50vh;">
+                <div class="container">
+                    <div class="hero-content" style="text-align: center;">
+                        <h1>Get In <span class="gradient-text">Touch</span></h1>
+                        <p>Have questions? Our security team is here to help.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="section">
+                <div class="container">
+                    <div class="contact-container">
+                        <!-- Contact Form -->
+                        <div class="contact-form">
+                            <h3 style="font-family: 'Syne', sans-serif; margin-bottom: 1.5rem;">Send us a Message</h3>
+                            <form>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" placeholder="Your name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" placeholder="your@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="subject">Subject</label>
+                                    <input type="text" id="subject" placeholder="Message subject">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message">Message</label>
+                                    <textarea id="message" placeholder="Your message..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                            </form>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="contact-info">
+                            <h3>Contact Information</h3>
+
+                            <div class="info-item">
+                                <div class="info-icon">✉️</div>
+                                <div class="info-content">
+                                    <h4>Email</h4>
+                                    <p>security@vulnvault.io</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">We'll respond within 24 hours</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">📞</div>
+                                <div class="info-content">
+                                    <h4>Phone</h4>
+                                    <p>+1 (555) 123-4567</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Mon-Fri, 9am-5pm EST</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">📍</div>
+                                <div class="info-content">
+                                    <h4>Office</h4>
+                                    <p>123 Security Lane<br>San Francisco, CA 94105</p>
+                                </div>
+                            </div>
+
+                            <!-- Social Links -->
+                            <div style="margin-top: 1rem;">
+                                <h4 style="font-family: 'Syne', sans-serif; margin-bottom: 1rem;">Follow Us</h4>
+                                <div class="social-links">
+                                    <a href="#" class="social-link">f</a>
+                                    <a href="#" class="social-link">𝕏</a>
+                                    <a href="#" class="social-link">in</a>
+                                    <a href="#" class="social-link">⚙️</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Frequently Asked Questions</h2>
+                    </div>
+
+                    <div class="faq-container">
+                        <div class="faq-item">
+                            <div class="faq-question">How often are vulnerabilities updated?</div>
+                            <div class="faq-answer">VulnVault updates its vulnerability database in real-time, with new threats added as they emerge. Critical vulnerabilities trigger instant alerts to all subscribed users.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">What kind of applications can be scanned?</div>
+                            <div class="faq-answer">We support scanning for all modern web applications including React, Vue, Angular, Node.js, Python, PHP, Java, ASP.NET, Ruby on Rails, and more.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Is my data secure with VulnVault?</div>
+                            <div class="faq-answer">Yes, we use enterprise-grade encryption and comply with GDPR, CCPA, and SOC 2 Type II standards. Your data is never shared with third parties.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Do you offer API access?</div>
+                            <div class="faq-answer">Yes, we provide comprehensive REST and GraphQL APIs for seamless integration with your CI/CD pipeline and development workflows.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <div class="logo-icon">🛡️</div>
+                        <span class="logo-text">VulnVault</span>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Protecting web applications with intelligent vulnerability intelligence.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Scanner</a></li>
+                        <li><a href="#">Intelligence</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 VulnVault. All rights reserved.</p>
+                <p>Made with security in mind 🔒</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation
+        function navigateTo(page) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(page).classList.add('active');
+
+            // Update nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelector(`a[onclick="navigateTo('${page}')"]`).classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>
