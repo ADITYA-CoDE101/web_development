@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+  --primary-green: #00ff88;
+  --primary-red: #ff3b3b;
+  --primary-amber: #ffb703;
+  --bg-dark: #0a0a0a;
+  --bg-darker: #050505;
+  --bg-card: #111111;
+  --text-primary: #e5e5e5;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(0, 255, 136, 0.2);
+}
+
+body {
+    background: #050505;
+    color: #e5e5e5;
+    font-family: 'Space Mono', monospace;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid #00ff88;
+}
+
+.logo {
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.nav-links a {
+    color: #9ca3af;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: #00ff88;
+}
+
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    color: #00ff88;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background: #00ff88;
+    color: #000;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00ff88;
+    font-weight: bold;
+}
+/* .btn-primary {
+  background: #00ff88;
+  color: #000;
+  box-shadow: 0 0 10px #00ff88;
+} */
+
+.btn-primary:hover {
+    background: #33ff99;
+}
+
+.terminal-section {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+/* .terminal {
+  background: #000;
+  border: 1px solid #00ff88;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  box-shadow: 0 0 20px rgba(0,255,136,0.2);
+}
+
+.terminal-body {
+  padding: 20px;
+  color: #00ff88;
+}
+
+.prompt {
+  color: #33ff99;
+}
+
+.critical {
+  color: #ff3b3b;
+}
+
+.high {
+  color: #ffb703;
+} */
+
+.terminal {
+    width: 80%;
+    max-width: 800px;
+    background: #000;
+    border: 1px solid #00ff88;
+    box-shadow: 0 0 25px rgba(0,255,136,0.2);
+}
+
+.terminal-header {
+    padding: 10px;
+    border-bottom: 1px solid #00ff88;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.red { background: #ff3b3b; }
+.yellow { background: #ffb703; }
+.green { background: #00ff88; }
+
+.terminal-body {
+    padding: 20px;
+    color: #00ff88;
+    min-height: 200px;
+}
+
+.prompt {
+    color: #33ff99;
+}
+
+.vulnerabilities {
+    padding: 60px 40px;
+}
+
+.vulnerabilities h2 {
+    color: #00ff88;
+    margin-bottom: 30px;
+}
+
+.vuln-card {
+    border: 1px solid #222;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #111;
+}
+
+.vuln-card.critical {
+    border-left: 4px solid #ff3b3b;
+}
+
+.vuln-card.high {
+    border-left: 4px solid #ffb703;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #00ff88;
+    margin-top: 40px;
+}
