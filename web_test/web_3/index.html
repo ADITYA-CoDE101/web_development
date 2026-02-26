@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROOTSENTINEL - Vulnerability Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon" onclick="navigateTo('home')"></span>     
+                <!-- May add logo image here in the future -->
+                <span>ROOTSENTINEL</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-page="home" onclick="navigateTo('home'); return false;">Home</a></li>
+                <li><a href="#" class="nav-link" data-page="scanner" onclick="navigateTo('scanner'); return false;">Scanner</a></li>
+                <li><a href="#" class="nav-link" data-page="vulnerabilities" onclick="navigateTo('vulnerabilities'); return false;">Vulnerabilities</a></li>
+                <li><a href="#" class="nav-link" data-page="about" onclick="navigateTo('about'); return false;">About</a></li>
+                <li><a href="#" class="nav-link" data-page="contact" onclick="navigateTo('contact'); return false;">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>
+                             <span class="highlight">Offensive Intelligence. Defensive Power.</span>
+                        </h1>
+
+                        <p>Comprehensive vulnerability assessment for web applications. Identify security risks, access detailed patch information, and implement proven remediation strategies.</p>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="navigateTo('scanner')">Start Scanning</button>
+                            <button class="btn btn-secondary" onclick="navigateTo('vulnerabilities')">View Database</button>
+                        </div>
+
+                        <!-- Feature Cards -->
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-icon">🔍</div>
+                                <h3>Smart Detection</h3>
+                                <p>Advanced vulnerability detection using proven security methodologies</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">📋</div>
+                                <h3>Patch Database</h3>
+                                <p>Access comprehensive CVE information with detailed remediation steps</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-icon">📊</div>
+                                <h3>Security Reports</h3>
+                                <p>Detailed reports with CVSS scores and severity classifications</p>
+                            </div>
+                            <div class="card">
+                                    <div class="card-icon">⚡</div>
+                                    <h3>Patch Suggestions</h3>
+                                    <p>Automated patch recommendations for identified vulnerabilities</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How It Works Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>How It Works</h2>
+                        <p>Three simple steps to secure your applications</p>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">1</div>
+                            <h4>Enter Target</h4>
+                            <p>Provide your application URL for vulnerability analysis</p>
+                        </div>
+                        <div class="card">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">2</div>
+                            <h4>Run Scan</h4>
+                            <p>Our engine performs comprehensive security assessment</p>
+                        </div>
+                        <div class="card">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">3</div>
+                            <h4>Get Reports</h4>
+                            <p>Receive detailed vulnerability reports with patch guidance</p>
+                        </div>
+                        <div class="card">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">4</div>
+                            <h4>Apply Patches</h4>
+                            <p>Implement recommended patches to secure your applications</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Vulnerability Database</h2>
+                        <p>Comprehensive CVE coverage with patch information</p>
+                    </div>
+
+                    <div class="cards-grid" style="text-align: center;">
+                        <div class="card">
+                            <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-danger); margin-bottom: 0.5rem;">245</div>
+                            <h4>Critical Issues</h4>
+                            <p>High-impact vulnerabilities</p>
+                        </div>
+                        <div class="card">
+                            <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-warning); margin-bottom: 0.5rem;">432</div>
+                            <h4>High Severity</h4>
+                            <p>Significant security risks</p>
+                        </div>
+                        <div class="card">
+                            <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 0.5rem;">323</div>
+                            <h4>Other Issues</h4>
+                            <p>Medium and low severity</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Why ROOTSENTINEL</h2>
+                    </div>
+
+                    <div class="two-column">
+                        <div>
+                            <h3>Complete Security Solution</h3>
+                            <ul class="feature-list">
+                                <li>Automated vulnerability scanning</li>
+                                <li>CVE database with patch information</li>
+                                <li>CVSS scoring and severity classification</li>
+                                <li>Security best practices guidance</li>
+                                <li>Remediation recommendations</li>
+                                <li>Multiple scan types</li>
+                                <li>Expert support available</li>
+                            </ul>
+                        </div>
+                        <div class="feature-placeholder">
+                            Security Scanning Tool
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SCANNER PAGE -->
+        <div id="scanner" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 40vh; padding: 3rem 2rem;">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>Vulnerability Scanner</h1>
+                        <p>Submit your application for comprehensive security analysis</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scanner Section -->
+            <section class="section">
+                <div class="container" style="max-width: 900px;">
+                    <div class="scanner-container">
+                        <h3>Scan Your Application</h3>
+                        
+                        <div class="input-group">
+                            <label for="scanUrl">Target URL</label>
+                            <input type="url" id="scanUrl" placeholder="https://example.com" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="scanType">Scan Type</label>
+                            <select id="scanType">
+                                <option value="full">Full Scan (Recommended)</option>
+                                <option value="quick">Quick Scan</option>
+                                <option value="owasp">OWASP Top 10</option>
+                                <option value="deep">Deep Security Audit</option>
+                            </select>
+                        </div>
+
+                        <div id="scanProgress" style="display: none;">
+                            <div style="color: var(--text-secondary); margin-bottom: 0.75rem; font-size: 0.9375rem;">Scanning in progress...</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="performScan()" style="width: 100%; margin-top: 1.5rem;">Start Scan</button>
+
+                        <!-- Scan Results -->
+                        <div id="scanResults" style="margin-top: 2rem;"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VULNERABILITIES PAGE -->
+        <div id="vulnerabilities" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 40vh; padding: 3rem 2rem;">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>CVE Database</h1>
+                        <p>Known vulnerabilities with patch information and remediation guidance</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vulnerabilities List -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Known Vulnerabilities</h2>
+                        <p>Click to view detailed patch information</p>
+                    </div>
+
+                    <div class="vuln-cards" id="vulnListContainer">
+                        <!-- Vulnerabilities will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="about" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 40vh; padding: 3rem 2rem;">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>About ROOTSENTINEL</h1>
+                        <p>Professional vulnerability scanning and security intelligence platform</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mission & Vision -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-icon">🎯</div>
+                            <h3>Our Mission</h3>
+                            <p>Empower developers with effective vulnerability detection and remediation tools to build secure applications</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🛡️</div>
+                            <h3>Our Vision</h3>
+                            <p>Create a secure digital ecosystem where vulnerabilities are identified and patched proactively</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Why Choose ROOTSENTINEL</h2>
+                    </div>
+
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-icon">⚡</div>
+                            <h3>Advanced Detection</h3>
+                            <p>AI-powered engine with 1000+ vulnerability patterns</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📊</div>
+                            <h3>Real-time Database</h3>
+                            <p>Continuously updated CVE information</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🔒</div>
+                            <h3>Enterprise Security</h3>
+                            <p>Bank-level encryption and compliance</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📱</div>
+                            <h3>Easy Integration</h3>
+                            <p>REST API for CI/CD pipelines</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📚</div>
+                            <h3>Expert Guidance</h3>
+                            <p>Detailed patch recommendations</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🆘</div>
+                            <h3>24/7 Support</h3>
+                            <p>Professional security team</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Our Team</h2>
+                    </div>
+
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-avatar">AK</div>
+                            <h4>Alex Kumar</h4>
+                            <p>Security Researcher</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">SP</div>
+                            <h4>Sarah Patel</h4>
+                            <p>Full Stack Developer</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">JM</div>
+                            <h4>James Mitchell</h4>
+                            <p>DevSecOps Lead</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">RC</div>
+                            <h4>Rachel Chen</h4>
+                            <p>Security Architect</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact" class="page">
+            <!-- Hero Section -->
+            <section class="hero" style="min-height: 40vh; padding: 3rem 2rem;">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>Get In Touch</h1>
+                        <p>Have questions? Contact our team</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="section">
+                <div class="container">
+                    <div class="contact-container">
+                        <!-- Contact Form -->
+                        <div class="contact-form">
+                            <h3>Send us a Message</h3>
+                            <form name="contactForm">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" name="name" placeholder="Your name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subject">Subject</label>
+                                    <input type="text" id="subject" name="subject" placeholder="Message subject" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message">Message</label>
+                                    <textarea id="message" name="message" placeholder="Your message..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                            </form>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="contact-info">
+                            <h3>Contact Information</h3>
+
+                            <div class="info-item">
+                                <div class="info-icon">✉️</div>
+                                <div class="info-content">
+                                    <h4>Email</h4>
+                                    <p>security@rootsentinel.io</p>
+                                    <p style="font-size: 0.875rem;">Response within 24 hours</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">📞</div>
+                                <div class="info-content">
+                                    <h4>Phone</h4>
+                                    <p>+91 1234567890</p>
+                                    <p style="font-size: 0.875rem;">Mon-Fri, 9am-5pm EST</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">📍</div>
+                                <div class="info-content">
+                                    <h4>Office</h4>
+                                    <p>xyz<br>abc location</p>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 1rem;">
+                                <h4 style="margin-bottom: 1rem;">Follow Us</h4>
+                                <div class="social-links">
+                                    <a href="https://github.com" target="_blank" class="social-link" title="GitHub">GH</a>
+                                    <a href="https://twitter.com" target="_blank" class="social-link" title="Twitter">𝕏</a>
+                                    <a href="https://linkedin.com" target="_blank" class="social-link" title="LinkedIn">in</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="section section-light">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Frequently Asked Questions</h2>
+                    </div>
+
+                    <div class="faq-container">
+                        <div class="faq-item">
+                            <div class="faq-question">How often is the vulnerability database updated?</div>
+                            <div class="faq-answer">ROOTSENTINEL updates its database with new CVEs as they emerge. Critical vulnerabilities are added immediately with detailed patch information.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">What applications can be scanned?</div>
+                            <div class="faq-answer">We support all modern web applications including React, Vue, Angular, Node.js, Python, PHP, Java, ASP.NET, Ruby on Rails, and more.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Is my data secure?</div>
+                            <div class="faq-answer">Yes. We use enterprise-grade encryption, comply with GDPR and CCPA, and maintain SOC 2 Type II compliance. Your data is never shared with third parties.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Do you offer API access?</div>
+                            <div class="faq-answer">Yes. We provide comprehensive REST and GraphQL APIs for seamless integration with your CI/CD pipeline and development workflows.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">What's included in the patch information?</div>
+                            <div class="faq-answer">Each CVE includes detailed patch recommendations, precautions, mitigation strategies, affected technologies, and links to official security bulletins.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">How accurate are the scans?</div>
+                            <div class="faq-answer">Our advanced engine achieves 98.7% accuracy with minimal false positives. Continuous machine learning improves detection rates.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>ROOTSENTINEL</h4>
+                    <p style="color: var(--text-tertiary); font-size: 0.9375rem;">Professional vulnerability scanning and security intelligence platform.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Scanner</a></li>
+                        <li><a href="#">Database</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 ROOTSENTINEL. All rights reserved.</p>
+                <p>Securing the digital frontier</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
