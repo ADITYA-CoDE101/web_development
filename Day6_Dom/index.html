@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM</title>
+</head>
+<body>
+    <h1 id="head1">This is the heading</h1>
+    <p id="para">This is the paragraph tag</p>
+    <button id="button">this is button</button>
+</body>
+<script>
+    const data = 100;
+    console.log(data);
+    const head1 = document.getElementById("head1");
+    console.log(head1.innerText);
+    head1.innerText = "This is the heading tag";
+    console.log(head1.innerText);
+    head1.style.color = "red";
+    
+    const button = document.getElementById("button");
+    // button.disabled = true;
+    
+    button.addEventListener("click", function(){
+        button.innerText = "Please wait..."
+        button.disabled = true;
+        document.body.style.backgroundColor = "Black";
+        head1.style.color = "white";
+        para.style.color = "white";
+        
+    })
+
+</script>
+</html>
