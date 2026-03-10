@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="button">Click on</button>
+    <p id="a">0</p>
+    <script>
+        const button = document.getElementById('button');
+        const count = document.getElementById('a');
+        button.addEventListener('click', function(){
+            // alert('Button Clicked');
+            console.log('Button Clicked');
+            count.innerText = parseInt(count.innerText) + 1;
+        });
+    </script>
+</body>
+</html>
+
+<!-- event listener is a function that waits for an event to occur and then executes a block of code in response to that event. In the provided code snippet, an event listener is attached to a button element. When the button is clicked, the event listener triggers a function that increments the count displayed in the paragraph element with id "a". Each time the button is clicked, the count increases by one, and the updated count is displayed on the webpage. -->

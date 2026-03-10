@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 
+    1.check a password field , mimum 8 length and should contain a number and a special character.
+    2. password must not exeed 10 characters.
+    3. password must contain at least one uppercase letter. 
+    -->
+
+    <h2>Password Validation</h2>
+    <input type="password" id="pass" placeholder="Enter password">
+    <button id="validate">Validate</button>
+    <p id="result"></p>
+    <script> 
+        const pass = document.getElementById("pass");
+        const validateButton = document.getElementById("validate");
+        const resultPara = document.getElementById("result");
+
+        validateButton.addEventListener("click", function() {
+            const password = pass.value;
+            let message = "";
+
+            if (password.length < 8) {
+                message += "Password must be at least 8 characters long. ";
+            }
+            if (password.length > 10) {
+                message += "Password must not exceed 10 characters. ";
+            }
+            if (!/[A-Z]/.test(password)) {
+                message += "Password must contain at least one uppercase letter. ";
+            }
+
+            resultPara.innerText = message || "Password is valid!";
+        });
+    </script>
+
+</body>
+</html>
