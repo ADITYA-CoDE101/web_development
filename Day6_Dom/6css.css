@@ -1,0 +1,70 @@
+/* Base styles */
+body {
+  background-color: white;
+  color: black;
+  transition: 0.3s;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.dark {
+  background-color: #121212;
+  color: white;
+}
+
+/* Headings */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+button, a {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover, a:hover {
+  background-color: #0056b3;
+}
+
+/* Testimonial styles */
+.testimonial {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dark .testimonial {
+  background: #333;
+}
+
+.testimonial img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.testimonial span {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: 15px;
+}

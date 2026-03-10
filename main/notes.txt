@@ -1,0 +1,9 @@
+assignment 6
+-------------
+hero section
+about us
+why
+testeminail 
+footer
+
+need to implement the dark mode light mode , also implement DOM storage
