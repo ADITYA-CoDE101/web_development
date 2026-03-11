@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    
+    //  asyncronous js
+    // console.log("Start")
+
+    // setTimeout(() => {
+    //     console.log("Data loaded")
+    // }, 2000)
+
+    // console.log("End")
+
+    function processData(callback) {
+    console.log("Processing data...")
+    console.log(callback)
+    callback()
+    }
+
+    function done() {
+        console.log("Data processed")
+    }
+
+    processData(done)
+    </script>
+</body>
+</html>

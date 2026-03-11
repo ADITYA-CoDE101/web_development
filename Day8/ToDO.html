@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --bg-color: #0f172a;
+            --container-bg: rgba(30, 41, 59, 0.65);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(192, 38, 211, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(30, 58, 138, 0.4) 0%, transparent 50%);
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .container {
+            background: var(--container-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #c4b5fd, #f472b6, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        input {
+            flex: 1;
+            padding: 14px 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-main);
+            font-size: 1.05rem;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .add-btn {
+            padding: 14px 18px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            color: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, var(--primary-hover), #9333ea);
+        }
+
+        .add-btn:active {
+            transform: translateY(1px) scale(0.95);
+        }
+
+        .task-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 8px;
+            scroll-behavior: smooth;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .task-list li {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .task-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(to bottom, #c4b5fd, var(--primary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-list li:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .task-list li:hover::before {
+            opacity: 1;
+        }
+
+        .task-list li.completed {
+            background: rgba(15, 23, 42, 0.4);
+            border-color: transparent;
+        }
+
+        .task-list li.completed::before {
+            background: #10b981;
+            /* Green success bar */
+            opacity: 1;
+        }
+
+        .task-list li.completed .task-content {
+            opacity: 0.5;
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-list li.completed .check-icon {
+            opacity: 1;
+            transform: scale(1);
+            color: #10b981;
+        }
+
+        .task-content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .check-icon {
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .task-content {
+            flex: 1;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 8px;
+            border: none;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.5;
+        }
+
+        .task-list li:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-btn:hover {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .clear-btn:active {
+            transform: translateY(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin: 3rem 0;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .empty-icon {
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>To-Do List</h2>
+
+        <div class="input-group">
+            <input type="text" id="task" placeholder="What needs to be done?" onkeypress="handleKeyPress(event)"
+                autocomplete="off">
+            <button onclick="addTask()" class="add-btn" aria-label="Add task">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+            </button>
+        </div>
+
+        <ul class="task-list" id="list"></ul>
+
+        <div class="empty-state" id="empty-state">
+            <div class="empty-icon">
+                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                    </path>
+                </svg>
+            </div>
+            <span>No tasks yet. Add one above!</span>
+        </div>
+
+        <button class="clear-btn" id="clear-btn" onclick="clearAll()" style="display: none;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+            </svg>
+            Clear All Tasks
+        </button>
+    </div>
+
+    <script>
+        const input = document.getElementById("task");
+        const list = document.getElementById("list");
+        const emptyState = document.getElementById("empty-state");
+        const clearBtn = document.getElementById("clear-btn");
+
+        function updateUI() {
+            if (list.children.length === 0) {
+                emptyState.style.display = "flex";
+                clearBtn.style.display = "none";
+            } else {
+                emptyState.style.display = "none";
+                clearBtn.style.display = "flex";
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === "Enter") {
+                addTask();
+            }
+        }
+
+        function addTask() {
+            const taskText = input.value.trim();
+            if (!taskText) return;
+
+            const li = document.createElement("li");
+
+            const contentWrapper = document.createElement("div");
+            contentWrapper.className = "task-content-wrapper";
+
+            const checkIcon = document.createElement("div");
+            checkIcon.className = "check-icon";
+            checkIcon.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>';
+
+            const taskSpan = document.createElement("span");
+            taskSpan.className = "task-content";
+            taskSpan.textContent = taskText;
+
+            contentWrapper.appendChild(checkIcon);
+            contentWrapper.appendChild(taskSpan);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.setAttribute("aria-label", "Delete task");
+            deleteBtn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            deleteBtn.onclick = function (e) {
+                e.stopPropagation(); // Prevent li click
+                li.style.transform = "translateX(30px)";
+                li.style.opacity = "0";
+                setTimeout(() => {
+                    li.remove();
+                    updateUI();
+                }, 300);
+            };
+
+            li.onclick = function () {
+                li.classList.toggle("completed");
+
+                // Add pop animation on completion
+                if (li.classList.contains("completed")) {
+                    li.style.transform = "scale(0.98)";
+                    setTimeout(() => {
+                        li.style.transform = "";
+                    }, 150);
+                }
+            };
+
+            li.appendChild(contentWrapper);
+            li.appendChild(deleteBtn);
+
+            list.appendChild(li);
+            input.value = "";
+            input.focus();
+
+            updateUI();
+        }
+
+        function clearAll() {
+            const items = list.children;
+            const itemsArray = Array.from(items);
+
+            itemsArray.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.transform = "translateX(30px)";
+                    item.style.opacity = "0";
+                }, index * 40); // Cascade clear animation
+            });
+
+            // Wait for all animations to finish before actually removing
+            setTimeout(() => {
+                list.innerHTML = "";
+                updateUI();
+            }, itemsArray.length * 40 + 300);
+        }
+
+        // Initialize UI state
+        updateUI();
+        input.focus();
+    </script>
+</body>
+
+</html>
