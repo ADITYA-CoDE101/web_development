@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional AI Security Parser</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; font-family: monospace; font-size: 14px; margin-bottom: 20px; box-sizing: border-box; }
+        button { background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #bdc3c7; }
+        h3 { margin-top: 30px; color: #27ae60; }
+        #output { background: #2d3436; color: #dfe6e9; padding: 20px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', Courier, monospace; min-height: 100px; border-left: 5px solid #3498db; }
+        .loading { font-style: italic; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛡️ AI Security Scan Analyzer</h2>
+    <p>Paste your Nmap, Nikto, or other security tool output below for a detailed vulnerability analysis and mitigation plan.</p>
+    
+    <textarea id="userInput" placeholder="Paste tool output here (e.g., Nmap scan results)..."></textarea>
+    
+    <button id="runBtn" onclick="runAI()">Analyze Security Posture</button>
+
+    <h3>AI Analysis & Mitigation Report:</h3>
+    <div id="output">Waiting for input...</div>
+</div>
+
+<script>
+// WARNING: Do not share this file publicly if your API Key is hardcoded!
+const API_KEY = "AIzaSyBPZpMAczKSMYnHutFVda9yRTf_37bhWco"; 
+
+async function getAIResponse(toolData) {
+    // This is the "Brain" of your request. It forces the AI into a Security Expert persona.
+    const systemInstruction = `You are a Senior Cybersecurity Consultant and Penetration Tester. 
+    Your task is to analyze the following tool output (Nmap, Nikto, etc.):
+    1. STRUCTURE: Reformat the raw data into a clean, readable Markdown table or list.
+    2. VULNERABILITIES: For every open port or found issue, explain the specific security risk.
+    3. MITIGATION: Provide step-by-step instructions on how to fix/patch each vulnerability.
+    4. HARDENING: Suggest long-term security configurations to prevent future attacks.
+    Be thorough, technical, and professional. Use Markdown formatting for your response.`;
+
+    const api_url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+
+    try {
+        const response = await fetch(api_url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: systemInstruction + "\n\nTool Output to analyze:\n" + toolData }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+            return "API Error: " + data.error.message;
+        }
+
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "The AI could not generate a response.";
+
+    } catch (error) {
+        console.error(error);
+        return "Connection Error: Ensure your API key is valid and you have an internet connection.";
+    }
+}
+
+async function runAI() {
+    const inputField = document.getElementById("userInput");
+    const outputDiv = document.getElementById("output");
+    const btn = document.getElementById("runBtn");
+
+    const rawText = inputField.value.trim();
+    
+    if (!rawText) {
+        alert("Please paste some tool output first!");
+        return;
+    }
+
+    // UI Updates
+    outputDiv.innerHTML = '<span class="loading">Analyzing scan data... Please wait...</span>';
+    btn.disabled = true;
+
+    const result = await getAIResponse(rawText);
+
+    // Convert the AI's Markdown response into readable text for the div
+    // (Note: For real Markdown rendering, you could include the 'marked.js' library)
+    outputDiv.textContent = result;
+    
+    btn.disabled = false;
+}
+</script>
+
+</body>
+</html>
